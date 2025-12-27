@@ -1,7 +1,6 @@
 use crate::clients::ai::AiClient;
 use crate::types::AiAnalysis;
 use crate::{AppError, Result};
-use async_trait::async_trait;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
 use std::time::Duration;

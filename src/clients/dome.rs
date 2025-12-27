@@ -13,6 +13,7 @@ struct DomeMarketResponse {
     question: String,
     slug: Option<String>,
     ticker: Option<String>,
+    #[allow(dead_code)]
     platform: String,
     outcomes: Vec<DomeOutcome>,
     volume_24h: Option<f64>,
