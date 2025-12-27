@@ -38,8 +38,8 @@ async fn main() -> anyhow::Result<()> {
         .with_state(app_state.clone());
 
     // Start server
-    let listener = tokio::net::TcpListener::bind("0.0.0.0:3000").await?;
-    tracing::info!("Server listening on http://0.0.0.0:3000");
+    let listener = tokio::net::TcpListener::bind("127.0.0.1:8000").await?;
+    tracing::info!("Server listening on http://127.0.0.1:8000");
 
     axum::serve(listener, app).await?;
 
