@@ -3,12 +3,10 @@ use chrono::Utc;
 use std::sync::Arc;
 use std::time::Instant;
 
-use crate::clients::{create_ai_client, AiProvider, DomeClient};
-use crate::clients::ai::prompts::build_analysis_prompt;
-use crate::types::{
-    AnalyzeEventMarketsRequest, AnalyzeEventMarketsResponse, ResponseMetadata,
-};
 use crate::api::AppState;
+use crate::clients::ai::prompts::build_analysis_prompt;
+use crate::clients::{create_ai_client, AiProvider, DomeClient};
+use crate::types::{AnalyzeEventMarketsRequest, AnalyzeEventMarketsResponse, ResponseMetadata};
 use crate::Result;
 
 pub async fn handler(
@@ -42,9 +40,12 @@ pub async fn handler(
 
     // Build AI prompt
     let prompt = build_analysis_prompt(&market_data, request.question.as_ref());
-
+    println!("prompt ------------> {:?}", prompt);
     // Call AI with retry logic (handled in client)
+    println!("provider ------------> {:?}", provider);
     let ai_client = create_ai_client(provider.clone())?;
+
+    tracing::info!("ai_client ------------> {}", ai_client.provider_name());
     let analysis = match ai_client.analyze_markets(prompt).await {
         Ok(analysis) => analysis,
         Err(e) => {
@@ -53,7 +54,12 @@ pub async fn handler(
                 retries = 1;
                 tracing::warn!("Grok failed, retrying with OpenAI");
                 let openai_client = create_ai_client(AiProvider::OpenAi)?;
-                openai_client.analyze_markets(build_analysis_prompt(&market_data, request.question.as_ref())).await?
+                openai_client
+                    .analyze_markets(build_analysis_prompt(
+                        &market_data,
+                        request.question.as_ref(),
+                    ))
+                    .await?
             } else {
                 return Err(e);
             }
@@ -87,4 +93,3 @@ impl Clients {
         })
     }
 }
-

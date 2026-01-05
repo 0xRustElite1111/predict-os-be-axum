@@ -92,7 +92,7 @@ impl OpenAiClient {
 
     async fn call_api(&self, prompt: &str) -> Result<AiAnalysis> {
         let request = OpenAiRequest {
-            model: "gpt-4-turbo-preview".to_string(),
+            model: "gpt-4".to_string(),
             messages: vec![Message {
                 role: "user".to_string(),
                 content: prompt.to_string(),
